@@ -1,3 +1,4 @@
+import random
 import shelve
 
 class Robot:
@@ -16,7 +17,12 @@ class Robot:
               "Hi, I'm Niall, how may I help you?")
         while True:
             s = input(self.prompt(35, "User"))
+            if s == "#brain":
+                print(self.words)
+                continue
             self.process_input(s)
+            print(self.niall_prompt(),
+                  " ".join(self.generate_output()))
 
     def process_input(self, s):
         words = s.strip().lower().split()
@@ -28,8 +34,18 @@ class Robot:
                 self.words[this_word][next_word] = 0
             self.words[this_word][next_word] += 1
         self.state["words"] = self.words
-        print("My brain:")
-        print(self.words)
+
+    def generate_output(self):
+        word = ""
+        while True:
+            next_words = self.words[word]
+            next_words = sum([[word] * count
+                              for word, count in next_words.items()],
+                             start=[])
+            word = random.choice(next_words)
+            if word == "":
+                break
+            yield word
 
 
 def main(*args):
