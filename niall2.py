@@ -1,5 +1,7 @@
 import random
+import re
 import shelve
+
 
 class Robot:
     def __init__(self, state):
@@ -20,6 +22,7 @@ class Robot:
             if s == "#brain":
                 print(self.words)
                 continue
+            s = re.sub(r"[^\w\s']", "", s)
             self.process_input(s)
             print(self.niall_prompt(),
                   " ".join(self.generate_output()))
@@ -54,6 +57,7 @@ def main(*args):
             Robot(state).run()
         except EOFError:
             print()
+
 
 if __name__ == "__main__":
     main()
