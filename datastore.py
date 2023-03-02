@@ -30,5 +30,33 @@ get_first_words = gql("""\
 
 # Execute the query on the transport
 result = client.execute(get_first_words)
-# print(type(result))  # <class 'dict'>
-print(result)  # {'queryTransition': [{'to': {'text': 'hello'}, 'count': 1}]}
+print(result)
+
+get_all_words = gql("""\
+query GetAllWords {
+  queryTransition {
+    to {
+      text
+    }
+    count
+  }
+}""")
+result = client.execute(get_all_words)
+print(result)
+
+get_next_words = gql("""\
+  query GetNextWords {
+    queryTransition {
+      from {
+        text: "hello"
+      }
+      to {
+        text
+      }
+      count
+    }
+  }
+""")
+
+result = client.execute(get_next_words)
+print(result)
