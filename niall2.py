@@ -1,4 +1,5 @@
 import boto3
+import copy
 import random
 import re
 import shelve
@@ -8,8 +9,23 @@ from boto3.dynamodb.conditions import Key
 
 class Robot:
     def __init__(self, state, table):
-        self.state = state
         self.table = table
+        with self.table.batch_writer() as batch:
+            self._batch_upload(state, batch)
+
+    def _batch_upload(self, state, batch):
+        words = copy.deepcopy(state["words"])
+        for this_word, next_words in words.items():
+            for next_word, count in next_words.items():
+                batch.put_item(Item={
+                    "From": this_word or "_",
+                    "To": next_word or "_",
+                    "Weight": count,
+                })
+                check = state["words"][this_word].pop(next_word)
+                assert check == count
+            check = state["words"].pop(this_word)
+            print(check)
 
     def prompt(self, color, who):
         return f"\x1b[{color}m{who}>\x1B[0m "
