@@ -1,6 +1,9 @@
 [project]
 name = "niall2"
 version = "0.0.0"
+dependencies = [
+    "boto3",
+]
 
 [build-system]
 requires = ["setuptools>=61.0"]
