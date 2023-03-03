@@ -7,6 +7,11 @@ from boto3.dynamodb.conditions import Key
 
 
 class Robot:
+    DEFAULT_ARGS = {
+        "user_input": None,
+        "dry_run": False,
+    }
+
     def __init__(self):
         self._table = None
 
@@ -23,25 +28,27 @@ class Robot:
         return table
 
     def __call__(self, event, context):
-        self.store(self.tokenize(self.get_param(event, "user_input")))
+        # Unpack arguments from event["body"] into locals().
+        args = self.DEFAULT_ARGS.copy()
+        args.update(json.loads(event["body"]))
+        user_input = args["user_input"]
+        dry_run = args["dry_run"]
+
+        # Analyse user input.
+        if user_input:
+            tokens = self.tokenize(user_input)
+            if dry_run:
+                print(f"tokens = {tokens}")
+            elif tokens:
+                self.store(tokens)
+
+        # Generate Niall's "response".
         return {
             "statusCode": 200,
             "body": json.dumps({
                 "niall_output": " ".join(self.generate()),
             }),
         }
-
-    def get_param(self, event, key):
-        result = event.get(key, None)
-        if result is not None:
-            return result
-        # Unpack API Gateway payload
-        body = json.loads(event["body"])
-        result = body.get(key, None)
-        if result is not None:
-            return result
-        print(event)
-        raise ValueError(event)
 
     def tokenize(self, s):
         """Sanitize user input, then split into tokens.
@@ -92,3 +99,11 @@ class Robot:
 
 
 lambda_handler = Robot()
+
+
+if __name__ == "__main__":
+    lambda_handler({
+        "body": json.dumps({
+            "user_input": "Hello Niall",
+            "dry_run": True,
+        })}, None)
