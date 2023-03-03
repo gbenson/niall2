@@ -1,4 +1,5 @@
 import boto3
+import json
 import random
 import re
 
@@ -6,33 +7,64 @@ from boto3.dynamodb.conditions import Key
 
 
 class Robot:
-    def __init__(self, table):
-        self.table = table
+    def __init__(self):
+        self._table = None
 
-    def prompt(self, color, who):
-        return f"\x1b[{color}m{who}>\x1B[0m "
+    @property
+    def table(self):
+        if self._table is None:
+            self._table = self._init_table()
+        return self._table
 
-    def niall_prompt(self):
-        return self.prompt(33, "Niall")
+    def _init_table(self):
+        dyn_resource = boto3.resource("dynamodb")
+        table = dyn_resource.Table("Niall2")
+        table.load()
+        return table
 
-    def run(self):
-        print(self.niall_prompt(),
-              "Hi, I'm Niall, how may I help you?")
-        while True:
-            s = input(self.prompt(35, "User"))
-            s = re.sub(r"[^\w\s']", "", s)
-            self.process_input(s)
-            print(self.niall_prompt(),
-                  " ".join(self.generate_output()))
+    def __call__(self, event, context):
+        self.store(self.tokenize(self.get_param(event, "user_input")))
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "niall_output": " ".join(self.generate()),
+            }),
+        }
 
-    def process_input(self, s):
-        words = s.strip().lower().split()
-        for this_word, next_word in zip(["_"] + words,
-                                        words + ["_"]):
+    def get_param(self, event, key):
+        result = event.get(key, None)
+        if result is not None:
+            return result
+        # Unpack API Gateway payload
+        body = json.loads(event["body"])
+        result = body.get(key, None)
+        if result is not None:
+            return result
+        print(event)
+        raise ValueError(event)
+
+    def tokenize(self, s):
+        """Sanitize user input, then split into tokens.
+
+        :param s: What the user is saying to Niall.
+        :returns: A sequence of tokens (i.e. words).
+        """
+        s = s.strip()
+        s = re.sub(r"[^\w\s']", "", s)
+        s = s.lower()
+        return s.split()
+
+    def store(self, tokens):
+        """Store a sequence of tokens in the database.
+
+        :param tokens: A sequence of tokens.
+        """
+        tokens = list(tokens)
+        for this, next in zip(["_"] + tokens, tokens + ["_"]):
             self.table.update_item(
                 Key={
-                    "From": this_word,
-                    "To": next_word,
+                    "From": this,
+                    "To": next,
                 },
                 UpdateExpression="ADD Weight :one",
                 ExpressionAttributeValues={
@@ -40,7 +72,11 @@ class Robot:
                 }
             )
 
-    def generate_output(self):
+    def generate(self):
+        """Generate a sequence of tokens.
+
+        :returns tokens: A sequence of tokens.
+        """
         word = "_"
         while True:
             response = self.table.query(
@@ -55,15 +91,4 @@ class Robot:
             yield word
 
 
-def main():
-    dyn_resource = boto3.resource("dynamodb")
-    table = dyn_resource.Table("Niall2")
-    table.load()
-    try:
-        Robot(table).run()
-    except EOFError:
-        print()
-
-
-if __name__ == "__main__":
-    main()
+lambda_handler = Robot()
