@@ -1,13 +1,11 @@
-import boto3
-import random
-import re
-
-from boto3.dynamodb.conditions import Key
+import os
+import requests
 
 
 class Robot:
-    def __init__(self, table):
-        self.table = table
+    def __init__(self, endpoint):
+        self.endpoint = endpoint
+        self.rs = requests.Session()
 
     def prompt(self, color, who):
         return f"\x1b[{color}m{who}>\x1B[0m "
@@ -19,48 +17,19 @@ class Robot:
         print(self.niall_prompt(),
               "Hi, I'm Niall, how may I help you?")
         while True:
-            s = input(self.prompt(35, "User"))
-            s = re.sub(r"[^\w\s']", "", s)
-            self.process_input(s)
-            print(self.niall_prompt(),
-                  " ".join(self.generate_output()))
-
-    def process_input(self, s):
-        words = s.strip().lower().split()
-        for this_word, next_word in zip(["_"] + words,
-                                        words + ["_"]):
-            self.table.update_item(
-                Key={
-                    "From": this_word,
-                    "To": next_word,
-                },
-                UpdateExpression="ADD Weight :one",
-                ExpressionAttributeValues={
-                    ":one": 1,
-                }
-            )
-
-    def generate_output(self):
-        word = "_"
-        while True:
-            response = self.table.query(
-                KeyConditionExpression=Key("From").eq(word)
-            )
-            next_words = sum([[item["To"]] * int(item["Weight"])
-                              for item in response["Items"]],
-                             start=[])
-            word = random.choice(next_words)
-            if word == "_":
-                break
-            yield word
+            response = self.rs.post(self.endpoint, json={
+                "user_input": input(self.prompt(35, "User")),
+            })
+            response.raise_for_status()
+            print(self.niall_prompt(), response.json()["niall_output"])
 
 
 def main():
-    dyn_resource = boto3.resource("dynamodb")
-    table = dyn_resource.Table("Niall2")
-    table.load()
+    filename = os.path.join(os.path.dirname(__file__), ".endpoint")
+    with open(filename) as fp:
+        endpoint = fp.read().strip()
     try:
-        Robot(table).run()
+        Robot(endpoint).run()
     except EOFError:
         print()
 
