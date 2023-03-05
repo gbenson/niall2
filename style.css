@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html, body {
+    height: 100%;
+}
+body {
+    color: rgb(236, 236, 241);
+    background-color: #343541;
+    font-family: sans-serif;
+}
+#messages {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    #input {
+	margin: 0.5em;
+    }
+}
+@media (min-width: 768px) {
+    #input {
+	margin: 2em;
+    }
+}
+#input {
+    color: rgb(236, 236, 241);
+    border-width: 0;
+    outline: none;
+}
+
+#input, .from-user {
+    background-color: rgba(0,0,0,0.25);
+}
+#input, .message {
+    padding: 1em;
+}
