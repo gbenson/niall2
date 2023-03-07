@@ -43,11 +43,13 @@ class Robot:
                 self.store(tokens)
 
         # Generate Niall's "response".
+        niall_output = " ".join(self.generate())
+        if dry_run:
+            niall_output = "[dry] " + niall_output
+        response = {"niall_output": niall_output}
         return {
             "statusCode": 200,
-            "body": json.dumps({
-                "niall_output": " ".join(self.generate()),
-            }),
+            "body": json.dumps(response),
         }
 
     def tokenize(self, s):
