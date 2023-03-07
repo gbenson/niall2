@@ -37,9 +37,7 @@ class Robot:
         # Analyse user input.
         if user_input:
             tokens = self.tokenize(user_input)
-            if dry_run:
-                print(f"tokens = {tokens}")
-            elif tokens:
+            if tokens and not dry_run:
                 self.store(tokens)
 
         # Generate Niall's "response".
@@ -104,8 +102,8 @@ lambda_handler = Robot()
 
 
 if __name__ == "__main__":
-    lambda_handler({
+    print(lambda_handler({
         "body": json.dumps({
             "user_input": "Hello Niall",
             "dry_run": True,
-        })}, None)
+        })}, None))
