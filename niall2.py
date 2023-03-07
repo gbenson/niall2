@@ -35,7 +35,10 @@ class Robot:
                 request["dry_run"] = True
             response = self.rs.post(self.endpoint, json=request)
             response.raise_for_status()
-            print(self.niall_prompt() + response.json()["niall_output"])
+            niall_output = (response.json()["niall_output"]
+                            .replace("[", "\x1B[32m[")
+                            .replace("]", "]\x1B[0m"))
+            print(self.niall_prompt() + niall_output)
 
 
 def main():
