@@ -28,7 +28,6 @@ class Robot:
         return table
 
     def __call__(self, event, context):
-        # Unpack arguments from event["body"] into locals().
         args = self.DEFAULT_ARGS.copy()
         args.update(json.loads(event["body"]))
         user_input = args["user_input"]
@@ -40,7 +39,7 @@ class Robot:
             if tokens and not dry_run:
                 self.store(tokens)
 
-        # Generate Niall's "response".
+        # Generate Niall's response.
         niall_output = " ".join(self.generate())
         if dry_run:
             niall_output = "[dry] " + niall_output
