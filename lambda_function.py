@@ -46,6 +46,9 @@ class Robot:
         response = {"niall_output": niall_output}
         return {
             "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+            },
             "body": json.dumps(response),
         }
 
