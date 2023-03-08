@@ -43,11 +43,19 @@ function addToChat(sender, message) {
   const div = document.createElement("div");
   div.classList.add("message");
   div.classList.add(`from-${sender}`);
+
+  const div2 = document.createElement("div");
+  div2.classList.add("avatar");
+  div.appendChild(div2);
+
+  const div3 = document.createElement("div");
   if (sender == "niall") {
-    div.classList.add("waiting");
+    div3.classList.add("waiting");
   }
-  div.innerText = message;
+  div3.innerText = message;
+  div.appendChild(div3);
+
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight - messages.clientHeight;
-  return div;
+  return div3;
 }

@@ -44,3 +44,33 @@ body {
 .waiting {
     color: rgba(236,236,241,0.25);
 }
+.message {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    column-gap: 1em;
+}
+.avatar {
+    width: 1.75em;
+    height: 1.75em;
+    border-radius: 0.125rem;
+    opacity: 0.75;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.from-user .avatar {
+    background-color: purple;
+}
+.from-niall .avatar {
+    background-color: green;
+}
+.from-user .avatar:before {
+    content: "U";
+}
+.from-niall .avatar:before {
+    content: "N";
+}
