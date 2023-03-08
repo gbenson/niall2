@@ -36,12 +36,16 @@ async function processInput(userInput) {
   console.log(json);
 
   niallDiv.innerText = json["niall_output"];
+  niallDiv.classList.remove("waiting");
 }
 
 function addToChat(sender, message) {
   const div = document.createElement("div");
   div.classList.add("message");
   div.classList.add(`from-${sender}`);
+  if (sender == "niall") {
+    div.classList.add("waiting");
+  }
   div.innerText = message;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight - messages.clientHeight;
