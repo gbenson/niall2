@@ -7,9 +7,24 @@
   <title>Niall2</title>
 </head>
 <body>
-  <div id="messages">
+  <div id="niall">
+    <div class="messages"></div>
+    <form method="post">
+      <input type="text" name="message"
+	     placeholder="Say something..."
+	     autocomplete="off" autofocus>
+      <button type="submit">
+	<svg stroke="currentColor" fill="none" stroke-width="2"
+	     viewBox="0 0 24 24" stroke-linecap="round"
+	     stroke-linejoin="round" class="h-4 w-4 mr-1"
+	     height="1em" width="1em"
+	     xmlns="http://www.w3.org/2000/svg">
+	  <line x1="22" y1="2" x2="11" y2="13"></line>
+	  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+	</svg>
+      </button>
+    </form>
   </div>
-  <input id="input" placeholder="Say something..." type="text" autofocus>
   <script type="module" src="niall2.js"></script>
 </body>
 </html>

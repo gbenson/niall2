@@ -1,24 +1,31 @@
-const theInput = document.getElementById("input");
-const messages = document.getElementById("messages");
-
 document.addEventListener("DOMContentLoaded", () => {
-  theInput.addEventListener("keydown", (e) => {
-    if (e.code === "Enter") {
-      let userInput = theInput.value;
-      theInput.value = "";
-      processInput(userInput);
-    }
-  });
+  const container = document.getElementById("niall");
+  console.log(`container = ${container}`);
+  const messages = container.getElementsByClassName("messages")[0];
+  console.log(`messages = ${messages}`);
+  const form = container.getElementsByTagName("form")[0];
+  console.log(`form = ${form}`);
+  const input = form.getElementsByTagName("input")[0];
+  console.log(`input = ${input}`);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let userInput = input.value;
+    input.value = "";
+    processInput(userInput, messages);
+  }, false);
+
 });
 
 const apiEndpointURL = ("https://nrtt8bz8be.execute-api.us" +
                         "-east-1.amazonaws.com/prod/niall2");
 
-async function processInput(userInput) {
+async function processInput(userInput, messages) {
   userInput = userInput.trim();
-  addToChat("user", userInput);
+  addToChat(messages, "user", userInput);
 
-  const niallDiv = addToChat("niall", "...");
+  const niallDiv = addToChat(messages, "niall", "...");
 
   const response = await fetch(apiEndpointURL, {
     method: "POST",
@@ -39,7 +46,7 @@ async function processInput(userInput) {
   niallDiv.classList.remove("waiting");
 }
 
-function addToChat(sender, message) {
+function addToChat(messages, sender, message) {
   const div = document.createElement("div");
   div.classList.add("message");
   div.classList.add(`from-${sender}`);

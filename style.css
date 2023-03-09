@@ -3,43 +3,56 @@
     padding: 0;
     box-sizing: border-box;
 }
-html, body {
+html, body, #niall {
     height: 100%;
 }
 body {
     color: rgb(236, 236, 241);
     background-color: #343541;
+    font-family: sans-serif;
+}
+#niall {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    font-family: sans-serif;
 }
-@media (max-width: 768px) {
-    #input, .message {
-	padding: 0.5em;
-    }
-}
-@media (min-width: 768px) {
-    #input {
-	margin: 1em;
-    }
-    #input, .message {
-	padding: 1em;
-    }
-}
-#messages {
+#niall .messages {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     overflow-y: scroll;
 }
-#input {
+#niall form {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+#niall form input {
     color: #ececf1;
     border-width: 0;
     outline: none;
+    width: 95vw;
 }
-#input, .from-user {
+#niall form button {
+    width: 5vw;
+    border: none;
+    color: rgb(236,236,241,0.5);
+}
+#niall form input, #niall form button, .from-user {
     background-color: rgba(0,0,0,0.25);
+}
+@media (max-width: 768px) {
+    #niall form input, #niall form button, .message {
+	padding: 0.5em;
+    }
+}
+@media (min-width: 768px) {
+    #niall form input, #niall form button {
+	margin: 1em;
+    }
+    #niall form input, #niall form button, .message {
+	padding: 1em;
+    }
 }
 .waiting {
     color: rgba(236,236,241,0.25);
