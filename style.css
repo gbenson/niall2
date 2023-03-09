@@ -44,6 +44,7 @@ body {
 @media (max-width: 768px) {
     #niall form input, #niall form button, .message {
 	padding: 0.5em;
+	font-size: 18px;
     }
 }
 @media (min-width: 768px) {
