@@ -1,10 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.getElementsByTagName("main")[0];
-  console.log(`main = ${main}`);
   const form = document.getElementsByTagName("form")[0];
-  console.log(`form = ${form}`);
   const input = form.getElementsByTagName("input")[0];
-  console.log(`input = ${input}`);
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -38,7 +35,6 @@ async function processInput(userInput, messages) {
     }),
   });
   const json = await response.json();
-  console.log(json);
 
   niallDiv.innerText = json["niall_output"];
   niallDiv.classList.remove("waiting");
