@@ -31,7 +31,6 @@ async function processInput(userInput, messages) {
     },
     body: JSON.stringify({
       user_input: userInput,
-      dry_run: true,
     }),
   });
   const json = await response.json();
