@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("niall");
-  console.log(`container = ${container}`);
-  const messages = container.getElementsByClassName("messages")[0];
-  console.log(`messages = ${messages}`);
-  const form = container.getElementsByTagName("form")[0];
+  const main = document.getElementsByTagName("main")[0];
+  console.log(`main = ${main}`);
+  const form = document.getElementsByTagName("form")[0];
   console.log(`form = ${form}`);
   const input = form.getElementsByTagName("input")[0];
   console.log(`input = ${input}`);
@@ -13,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let userInput = input.value;
     input.value = "";
-    processInput(userInput, messages);
+    processInput(userInput, main);
   }, false);
 
 });

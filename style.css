@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-html, body, #niall {
+html, body {
     height: 100%;
 }
 body {
@@ -11,47 +11,46 @@ body {
     background-color: #343541;
     font-family: sans-serif;
 }
-#niall {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-#niall .messages {
+main {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     overflow-y: scroll;
 }
-#niall form {
+footer {
+    position: fixed;
+    bottom: 0;
+}
+footer form {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
-#niall form input {
+input {
     color: #ececf1;
     border-width: 0;
     outline: none;
     width: 95vw;
 }
-#niall form button {
+button {
     width: 5vw;
     border: none;
     color: rgb(236,236,241,0.5);
 }
-#niall form input, #niall form button, .from-user {
+input, button, .from-user {
     background-color: rgba(0,0,0,0.25);
 }
 @media (max-width: 768px) {
-    #niall form input, #niall form button, .message {
+    input, button, .message {
 	padding: 0.5em;
 	font-size: 18px;
     }
 }
 @media (min-width: 768px) {
-    #niall form input, #niall form button {
+    input, button {
 	margin: 1em;
     }
-    #niall form input, #niall form button, .message {
+    input, button, .message {
 	padding: 1em;
     }
 }
