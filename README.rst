@@ -28,8 +28,8 @@ Upgrade pip and setuptools::
 
 Install in editable mode::
 
- pip install -e .
+ pip install -e .[dev]
 
-Run it::
+Test it::
 
- python niall2.py
+ pytest

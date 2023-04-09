@@ -101,11 +101,3 @@ class Robot:
 
 
 lambda_handler = Robot()
-
-
-if __name__ == "__main__":
-    print(lambda_handler({
-        "body": json.dumps({
-            "user_input": "Hello Niall",
-            "dry_run": True,
-        })}, None))
