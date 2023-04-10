@@ -60,35 +60,56 @@ class MockDynamoDBTable:
     ]
 
 
-@pytest.fixture
-def mock_database(monkeypatch):
+@pytest.fixture(scope="class")
+def mock_database():
     session = MockBoto3Session()
-    monkeypatch.setattr(boto3, "DEFAULT_SESSION", session)
-    yield session
-    session._tables[:] = []
+    saved_session = boto3.DEFAULT_SESSION
+    boto3.DEFAULT_SESSION = session
+    try:
+        yield session
+    finally:
+        boto3.DEFAULT_SESSION = saved_session
+        session._tables[:] = []
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def deterministic():
     random.seed("Hello Niall")
 
 
-def test_handler(mock_database, deterministic):
-    response = lambda_handler({
-        "body": json.dumps({
-            "user_input": "Hello Niall",
-            "dry_run": True,
-        })}, None)
+class TestHandler:
+    @pytest.fixture(scope="class")
+    def response(self, mock_database, deterministic):
+        return lambda_handler({
+            "body": json.dumps({
+                "user_input": "Hello Niall",
+                "dry_run": True,
+            })}, None)
 
-    assert "statusCode" in response
-    assert response["statusCode"] == 200
+    def test_response_has_status(self, response):
+        assert "statusCode" in response
 
-    assert "headers" in response
-    assert "Access-Control-Allow-Origin" in response["headers"]
-    assert response["headers"]["Access-Control-Allow-Origin"] == "*"
+    def test_response_status(self, response):
+        assert response["statusCode"] == 200
 
-    assert "body" in response
-    body = json.loads(response["body"])
+    def test_response_has_headers(self, response):
+        assert "headers" in response
 
-    assert "niall_output" in body
-    assert body["niall_output"] == ("[dry] hello gary")
+    def test_response_has_cors_headers(self, response):
+        assert "Access-Control-Allow-Origin" in response["headers"]
+
+    def test_cors_headers(self, response):
+        assert response["headers"]["Access-Control-Allow-Origin"] == "*"
+
+    def test_response_has_body(self, response):
+        assert "body" in response
+
+    @pytest.fixture(scope="class")
+    def response_body(self, response):
+        return json.loads(response["body"])
+
+    def test_body_has_niall_output(self, response_body):
+        assert "niall_output" in response_body
+
+    def test_niall_output(self, response_body):
+        assert response_body["niall_output"] == "[dry] hello gary"
