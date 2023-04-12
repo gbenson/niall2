@@ -60,6 +60,7 @@ class MockDynamoDBTable:
                 {"From": "123", "To": "_", "Weight": Decimal(4)},
             ]},
         ])
+        self._updates = []
 
     def load(self):
         self._load_count += 1
@@ -67,6 +68,9 @@ class MockDynamoDBTable:
     def query(self, **kwargs):
         self._queries.append(kwargs)
         return self._responses[len(self._queries) - 1]
+
+    def update_item(self, **kwargs):
+        self._updates.append(kwargs)
 
 
 @pytest.fixture
